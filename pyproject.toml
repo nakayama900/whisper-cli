@@ -1,21 +1,27 @@
-[tool.poetry]
+[project]
 name = "whisper-cli"
 version = "0.0.5"
 description = "A command-line interface for transcribing and translating audio using OpenAI's Whisper API"
-authors = ["Vatsal <vatsalaggarwal@gmail.com>"]
-license = "MIT"
+authors = [{ name = "Vatsal", email = "vatsalaggarwal@gmail.com" }]
+requires-python = "~=3.10"
 readme = "README.md"
-packages = [{include = "whisper_cli"}]
+license = "MIT"
+dependencies = [
+    "typer[all]>=0.7.0,<0.8",
+    "openai>=0.27.0,<0.28",
+    "toml>=0.10.2,<0.11",
+    "click<8.2.0",
+]
 
-[tool.poetry.scripts]
+[project.scripts]
 whisper = "whisper_cli.main:app"
 
-[tool.poetry.dependencies]
-python = "^3.10"
-typer = {extras = ["all"], version = "^0.7.0"}
-openai = "^0.27.0"
-toml = "^0.10.2"
+[tool.hatch.build.targets.sdist]
+include = ["whisper_cli"]
+
+[tool.hatch.build.targets.wheel]
+include = ["whisper_cli"]
 
 [build-system]
-requires = ["poetry-core"]
-build-backend = "poetry.core.masonry.api"
+requires = ["hatchling"]
+build-backend = "hatchling.build"
