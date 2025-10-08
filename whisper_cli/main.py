@@ -9,6 +9,7 @@ from whisper_cli.env import _read_user_config
 app = typer.Typer(no_args_is_help=True)
 app.add_typer(env.env_app)
 app.add_typer(env.key_app)
+app.add_typer(env.url_app)
 
 
 def get_file_type(file_name: str) -> str:
@@ -54,6 +55,15 @@ def get_api_key(env: str = "default") -> str:
     )
 
 
+def get_api_url(env: str = "default") -> Optional[str]:
+    """Returns the API URL for the current environment if configured."""
+    user_config = _read_user_config()
+    for key, value in user_config.items():
+        if "active" in value:
+            return value.get("api_url")
+    return None
+
+
 def show_result(result, response_format: Optional[str]):
     """Show result."""
     if response_format is None:
@@ -76,6 +86,9 @@ def transcribe(
 ):
     """Transcribe audio file using whisper."""
     openai.api_key = get_api_key()
+    api_url = get_api_url()
+    if api_url:
+        openai.api_base = api_url
 
     transcript = openai.Audio.transcribe(
         model,
@@ -100,6 +113,9 @@ def translate(
 ):
     """Translate audio file using whisper."""
     openai.api_key = get_api_key()
+    api_url = get_api_url()
+    if api_url:
+        openai.api_base = api_url
 
     translation = openai.Audio.translate(
         model,

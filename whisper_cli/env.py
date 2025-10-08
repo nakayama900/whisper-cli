@@ -9,6 +9,7 @@ env_app = typer.Typer(
     name="env", help="Set the current environment.", no_args_is_help=True
 )
 key_app = typer.Typer(name="key", help="Manage OpenAI API keys.", no_args_is_help=True)
+url_app = typer.Typer(name="url", help="Manage OpenAI API URL.", no_args_is_help=True)
 
 user_config_path: str = os.environ.get("OPENAI_CONFIG_PATH") or os.path.expanduser(
     "~/.openai.toml"
@@ -40,6 +41,12 @@ def set_key(api_key: str, env: str = "default"):
     _store_user_config({"api_key": api_key}, env=env)
 
 
+@url_app.command("set")
+def set_url(api_url: str, env: str = "default"):
+    """Save OpenAI API URL."""
+    _store_user_config({"api_url": api_url}, env=env)
+
+
 @env_app.command("activate")
 def activate_env(env: str = "default"):
     """Activate environment."""
@@ -66,6 +73,6 @@ def list_envs():
     print("[bold]Environments[/bold]")
     for key in config.keys():
         if "active" in config[key]:
-            print(f" * [bold red]\[active][/bold red] {key}")
+            print(f" * [bold red]\\[active][/bold red] {key}")
         else:
             print(f" * {key}")
